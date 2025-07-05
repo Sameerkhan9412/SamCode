@@ -3,7 +3,7 @@ const userSchema = new mongoose.Schema (
   {
     firstName: {
       type: String,
-      require: true,
+      required: true,
       minLength: 3,
       maxLength: 30,
     },
@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema (
     },
     emailId: {
       type: String,
-      require: true,
+      required: true,
       unique: true,
       trime: true,
     },
@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema (
     problemSolved: {
       type: [String],
     },
+    password:{
+      type:String,
+      required:true
+    }
   },
   {timestamps: true}
 );
