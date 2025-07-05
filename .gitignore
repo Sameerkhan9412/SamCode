@@ -1,0 +1,61 @@
+# Node modules for backend and frontend
+node_modules/
+client/node_modules/
+
+# Build output
+dist/
+build/
+client/build/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Optional: Ignore coverage reports if using testing tools
+coverage/
+client/coverage/
+
+# Optional: Ignore MongoDB data dump files
+dump/
+
+# Optional: Ignore production files like compressed archives
+*.tgz
+*.zip
+*.tar
+
+# Optional: Ignore build cache for Next.js (if used)
+.next/
+
+# Optional: Ignore PM2 logs (if using PM2)
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional: Ignore ESLint cache
+.eslintcache
+
+# Optional: Ignore TypeScript build output (if using TS)
+*.tsbuildinfo
