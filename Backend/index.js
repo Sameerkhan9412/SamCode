@@ -1,0 +1,19 @@
+const express=require('express');
+const dotenv=require('dotenv')
+const cookieParser=require('cookie-parser')
+const DBConnection = require('./config/database');
+const app=express();
+dotenv.config();
+const PORT=process.env.PORT || 3000;
+
+app.use(express.json())
+app.use(cookieParser())
+
+app.listen(PORT,()=>{
+    console.log(`Server is running on port ${PORT}`);
+    DBConnection(process.env.mongoDB_url);
+});
+
+app.get('/',(req,res)=>{
+    res.send('Hello World!');
+});

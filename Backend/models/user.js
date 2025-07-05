@@ -1,0 +1,39 @@
+import mongoose from 'mongoose';
+const userSchema = new mongoose.Schema (
+  {
+    firstName: {
+      type: String,
+      require: true,
+      minLength: 3,
+      maxLength: 30,
+    },
+    lastName: {
+      type: String,
+      minLength: 3,
+      maxLength: 30,
+    },
+    emailId: {
+      type: String,
+      require: true,
+      unique: true,
+      trime: true,
+    },
+    age: {
+      type: Number,
+      min: 6,
+      max: 70,
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+    },
+    problemSolved: {
+      type: [String],
+    },
+  },
+  {timestamps: true}
+);
+
+const User=mongoose.model("user",userSchema)
+module.exports=User;
