@@ -1,6 +1,5 @@
-import { login, register } from "../controllers/userAuth";
-
-const express=express();
+const express=require("express")
+const { login, logout, register } =require("../controllers/userAuth");
 const authRouter=express.Router()
 
 //Register
@@ -10,4 +9,6 @@ authRouter.post("/login",login)
 // Logout
 authRouter.post("/logout",logout)
 // Get Profile
-authRouter.get("/getProfile",getProfile)
+// authRouter.get("/getProfile",getProfile)
+
+module.exports=authRouter;
