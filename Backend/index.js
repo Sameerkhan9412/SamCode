@@ -14,16 +14,12 @@ app.use("/user",authRouter)
 
 const initializeConnection=async()=>{
     try {
-        await Promise.all([DBConnection(process.env.mongoDB_url),redisClient()])
+        await Promise.all([DBConnection(process.env.mongoDB_url),redisClient.connect()])
         app.listen(PORT,()=>{
             console.log(`Server is running on port ${PORT}`);
         });
     } catch (error) {
         console.log("error in connection",error);
-        return res.status(500).json({
-            success:false,
-            message:"something went wrong"
-        })
     }
 }
 

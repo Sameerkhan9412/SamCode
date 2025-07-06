@@ -1,13 +1,16 @@
 const jwt=require("jsonwebtoken");
 const User = require("../models/user");
-const userMiddleware=async(req,res,next)=>{
+const redisClient = require("../config/redisClient");
+const auth=async(req,res,next)=>{
+    
     try {
-        const token=req.cookies;
+        const {token}=req.cookies;
         if(!token){
-               throw new Error("Token is invalid");
+            throw new Error("Token is invalid");
         }
         const payload=jwt.verify(token,process.env.jwt_secret)
         const {_id}=payload;
+        console.log("token,",payload)
         if(!_id){
             throw new Error("Token is invalid")
         }
@@ -16,7 +19,7 @@ const userMiddleware=async(req,res,next)=>{
             throw new Error("User doesnt exist");
         }
         // check redis block list
-        const isBlocked=await redisClient.exist(token:${token})
+        const isBlocked=await redisClient.exists(`token:${token}`)
         if(isBlocked){
             throw new Error("Invalid token");
         }
@@ -30,3 +33,5 @@ const userMiddleware=async(req,res,next)=>{
     });
     }
 }
+
+module.exports={auth}
