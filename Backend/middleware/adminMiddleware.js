@@ -1,7 +1,7 @@
-const jwt=require("jsonwebtoken");
-const User = require("../models/user");
-const redisClient = require("../config/redisClient");
-const auth=async(req,res,next)=>{
+const jwt =require('jsonwebtoken');
+const User = require('../models/user');
+const redisClient = require('../config/redisClient');
+const adminMiddleware=async(req,res,next)=>{
     
     try {
         const {token}=req.cookies;
@@ -10,11 +10,14 @@ const auth=async(req,res,next)=>{
         }
         const payload=jwt.verify(token,process.env.jwt_secret)
         const {_id}=payload;
-        console.log("token,",payload)
+        // console.log("token,",payload)
         if(!_id){
             throw new Error("Token is invalid")
         }
         const result=await User.findById(_id);
+        if(payload.role!='admin'){
+            throw new Error("Invalid token")
+        }
         if(!result){
             throw new Error("User doesnt exist");
         }
@@ -33,5 +36,4 @@ const auth=async(req,res,next)=>{
     });
     }
 }
-
-module.exports={auth}
+module.exports=adminMiddleware

@@ -12,7 +12,7 @@ const register = async (req, res) => {
   try {
     validate (req.body);
     const {firstName, emailId, password} = req.body;
-    req.body.role='user'
+    req.body.role = 'user';
     // existing user check krne ki need nhi h bcz of uniqueness
     // const existingUser=await User.find({emailId});
     // if(existingUser){
@@ -26,11 +26,11 @@ const register = async (req, res) => {
     const user = await User.create (req.body);
     const userId = user._id;
     const token = jwt.sign (
-      {_id: user._id, emailId: emailId},
+      {_id: user._id, emailId: emailId, role: 'user'},
       process.env.jwt_secret,
       {expiresIn: 60 * 60}
     );
-    res.cookie('token', token, {maxAge: 60 * 60 * 1000});
+    res.cookie ('token', token, {maxAge: 60 * 60 * 1000});
     res.status (201).json ({
       success: true,
       message: 'User Registered Successfully',
@@ -65,11 +65,11 @@ const login = async (req, res) => {
       throw new error ('Invalid Credentials');
     }
     const token = jwt.sign (
-      {_id: user._id, emailId: emailId},
+      {_id: user._id, emailId: emailId, role: user.role},
       process.env.jwt_secret,
       {expiresIn: 60 * 60}
     );
-    res.cookie('token', token, {maxAge: 60 * 60 * 1000});
+    res.cookie ('token', token, {maxAge: 60 * 60 * 1000});
     res.status (200).json ({
       success: true,
       message: 'User Login Successfully',
@@ -92,11 +92,11 @@ const logout = async (req, res) => {
     const {token} = req.cookies;
     const payload = jwt.decode (token);
     await redisClient.set (`token:${token}`, 'blocked');
-    console.log("payload",payload)
+    console.log ('payload', payload);
     await redisClient.expireAt (`token:${token}`, payload.exp);
     // add token to redis blocklist
     // clear cookie
-    res.cookie('token', null, {expires: new Date (Date.now ())});
+    res.cookie ('token', null, {expires: new Date (Date.now ())});
     return res.status (200).json ({
       success: true,
       message: 'logged out successfully',
@@ -110,4 +110,32 @@ const logout = async (req, res) => {
   }
 };
 
-module.exports = {register, login, logout};
+const adminRegister = async (req,res) => {
+  try {
+    validate (req.body);
+    const {firstName, emailId, password} = req.body;
+    req.body.role = 'admin';
+    const hashedPassword = await bcrypt.hash (password, 10);
+    req.body.password = hashedPassword;
+    const user = await User.create (req.body);
+    const userId = user._id;
+    const token = jwt.sign (
+      {_id: user._id, emailId: emailId, role: 'user'},
+      process.env.jwt_secret,
+      {expiresIn: 60 * 60}
+    );
+    res.cookie ('token', token, {maxAge: 60 * 60 * 1000});
+    res.status (201).json ({
+      success: true,
+      message: 'User Registered Successfully',
+    });
+  } catch (error) {
+    console.log ('error', error);
+    return res.status (500).json ({
+      success: false,
+      message: 'something went wrong while registering',
+    });
+  }
+};
+
+module.exports = {register, login, logout, adminRegister};
